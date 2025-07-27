@@ -16,6 +16,7 @@ public:
 
 	bool capture(const std::filesystem::path &target,
 			bool recursive = false);
+	bool show_info(const std::filesystem::path &target);
 
 private:
 	config _config;

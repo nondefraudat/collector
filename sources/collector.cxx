@@ -1,8 +1,10 @@
 #include <database.hxx>
 #include <collector.hxx>
+#include <openssl/evp.h>
 #include <openssl/sha.h>
 #include <filesystem>
 #include <cassert>
+#include <iostream>
 
 using namespace std;
 namespace fs = filesystem;
@@ -27,6 +29,18 @@ bool collector::capture(const fs::path &target, bool recursive) {
 	return succeed;
 }
 
+bool collector::show_info(const fs::path &target) {
+	auto id = _database.id_by_hash(target.stem());
+	if (id == -1) {
+		cout << target.stem() << " uncaptured!" << endl;
+		return false;
+	}
+	for (const auto &entry : _database.file_info(id)) {
+		cout << entry.first << ": " << entry.second << ";" << endl;	
+	}
+	return true;
+}
+
 bool collector::capture_file(file f) {
 	auto new_path = _config.collection_path()/f.hash();
 	for (const auto &hash : _database.hash_by_size(f.size())) {
@@ -36,7 +50,12 @@ bool collector::capture_file(file f) {
 			return t.create_symlink(f.path());
 		}
 	}	
-	if (_database.add(f) != -1) {
+	int64_t file_id;
+	if ( (file_id = _database.add(f)) != -1 ) {
+		auto file_path = f.path();
+		_database.add_info(file_id, "name", file_path.stem());
+		_database.add_info(file_id, "format", file_path.extension());
+		_database.add_info(file_id, "size", to_string(f.size()) + "B");
 		return f.move_to(new_path);
 	}
 	return false;
