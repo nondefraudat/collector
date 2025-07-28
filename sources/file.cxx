@@ -1,5 +1,5 @@
-#include <file.hxx>
-#include <hashsum.hxx>
+#include <collector/file.hxx>
+#include <collector/hashsum.hxx>
 #include <fstream>
 #include <system_error>
 #include <vector>

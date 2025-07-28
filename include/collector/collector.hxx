@@ -1,7 +1,7 @@
 #pragma once
 
-#include <config.hxx>
-#include <database.hxx>
+#include <collector/config.hxx>
+#include <collector/database.hxx>
 #include <filesystem>
 
 namespace nd {

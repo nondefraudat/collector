@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <file.hxx>
+#include <collector/file.hxx>
 #include <filesystem>
 #include <list>
 #include <map>

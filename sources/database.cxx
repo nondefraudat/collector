@@ -1,8 +1,6 @@
-#include <cassert>
-#include <cstddef>
-#include <cstdint>
-#include <database.hxx>
+#include <collector/database.hxx>
 #include <sqlite3.h>
+#include <cassert>
 
 using namespace std;
 namespace fs = filesystem;

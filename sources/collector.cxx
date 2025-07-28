@@ -1,5 +1,6 @@
-#include <database.hxx>
-#include <collector.hxx>
+#include <collector/database.hxx>
+#include <collector/collector.hxx>
+
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 #include <filesystem>
@@ -24,7 +25,7 @@ bool collector::capture(const fs::path &target, bool recursive) {
 	bool succeed = true;
 	for (const auto &e : fs::directory_iterator(target) ) {
 		if (is_directory(e) && recursive) { succeed &= capture(e, recursive); }
-		else { succeed &= capture_file(e.path()); }
+		else if (fs::is_regular_file(e)) { succeed &= capture_file(e.path()); }
 	}
 	return succeed;
 }
@@ -45,9 +46,9 @@ bool collector::capture_file(file f) {
 	auto new_path = _config.collection_path()/f.hash();
 	for (const auto &hash : _database.hash_by_size(f.size())) {
 		if (f.hash() == hash) {
-			file t(new_path);
-			f.remove();
-			return t.create_symlink(f.path());
+			// file t(new_path);
+			// f.remove();
+			return true; // t.create_symlink(f.path());
 		}
 	}	
 	int64_t file_id;
